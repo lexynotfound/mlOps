@@ -1,0 +1,6 @@
+artifact_location: mlflow-artifacts:/318579017700901812
+creation_time: 1747561161622
+experiment_id: '318579017700901812'
+last_update_time: 1747561161622
+lifecycle_stage: active
+name: candidate_recommendation_system

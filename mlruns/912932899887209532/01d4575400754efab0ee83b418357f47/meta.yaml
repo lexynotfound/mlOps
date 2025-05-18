@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/912932899887209532/01d4575400754efab0ee83b418357f47/artifacts
+end_time: 1747572417262
+entry_point_name: ''
+experiment_id: '912932899887209532'
+lifecycle_stage: active
+run_id: 01d4575400754efab0ee83b418357f47
+run_name: candidate_clustering_model
+run_uuid: 01d4575400754efab0ee83b418357f47
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1747572396833
+status: 3
+tags: []
+user_id: raiha

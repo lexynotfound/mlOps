@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1747572620940
+current_stage: None
+description: ''
+last_updated_timestamp: 1747572620940
+name: tfidf_vectorizer
+run_id: 01d4575400754efab0ee83b418357f47
+run_link: ''
+source: models:/tfidf_vectorizer/1
+status: READY
+status_message: null
+storage_location: mlflow-artifacts:/912932899887209532/01d4575400754efab0ee83b418357f47/artifacts/tfidf_vectorizer
+user_id: null
+version: 2
