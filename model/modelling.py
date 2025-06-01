@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import mlflow
+import dagshub
 import mlflow.sklearn
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
@@ -12,10 +13,21 @@ import joblib
 import matplotlib.pyplot as plt
 
 # Set MLflow tracking URI (local)
-mlflow.set_tracking_uri("http://localhost:8000")
+# --- PILIH TARGET MLFLOW ---
+TARGET = os.getenv("MLFLOW_TARGET", "dagshub")  # default ke dagshub
+
+if TARGET == "dagshub":
+    dagshub.init(repo_owner='lexynotfound', repo_name='mlops', mlflow=True)
+    print("[MLflow] Logging to DagsHub")
+elif TARGET == "local":
+    mlflow.set_tracking_uri("http://localhost:8000")
+    print("[MLflow] Logging to LOCALHOST")
+else:
+    raise ValueError("Unknown MLFLOW_TARGET. Use 'dagshub' or 'local'.")
+
+# Set experiment
 experiment_name = "candidate_recommendation_system"
 mlflow.set_experiment(experiment_name)
-
 
 def load_data(data_dir):
     """Load preprocessed data"""

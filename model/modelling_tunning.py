@@ -22,6 +22,7 @@ from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bo
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import joblib
+import dagshub
 import warnings
 
 # Suppress specific pandas warnings that we're handling properly
@@ -39,11 +40,22 @@ logging.basicConfig(
 logger = logging.getLogger("candidate_recommendation.training")
 
 # Set MLflow tracking URI and experiment
-MLFLOW_PORT = 8000
-MLFLOW_URI = f"http://localhost:{MLFLOW_PORT}"
-EXPERIMENT_NAME = "candidate_recommendation_system"
+# Tentukan target logging: dagshub atau local
+TARGET = os.getenv("MLFLOW_TARGET", "dagshub")  # default: dagshub
 
-mlflow.set_tracking_uri(MLFLOW_URI)
+if TARGET == "dagshub":
+    dagshub.init(repo_owner='lexynotfound', repo_name='mlops', mlflow=True)
+    MLFLOW_URI = "https://dagshub.com/lexynotfound/mlops.mlflow"
+    print("[MLflow] Logging to DagsHub")
+elif TARGET == "local":
+    mlflow.set_tracking_uri("http://localhost:8000")
+    MLFLOW_URI = "http://localhost:8000"
+    print("[MLflow] Logging to LOCALHOST")
+else:
+    raise ValueError("Unknown MLFLOW_TARGET. Use 'dagshub' or 'local'.")
+
+# Tetap set experiment setelah tracking URI
+EXPERIMENT_NAME = "candidate_recommendation_system"
 mlflow.set_experiment(EXPERIMENT_NAME)
 
 

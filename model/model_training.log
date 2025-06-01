@@ -32,3 +32,44 @@
 2025-05-18 19:46:57,261 - candidate_recommendation.training - INFO - Optimal number of clusters: 9
 2025-05-18 19:46:57,261 - candidate_recommendation.training - INFO - Test silhouette score: 0.3975
 2025-05-18 19:46:57,312 - candidate_recommendation.training - INFO - Model training completed and logged to MLflow
+2025-06-01 14:01:07,084 - httpx - INFO - HTTP Request: POST https://dagshub.com/login/oauth/middleman "HTTP/1.1 504 Gateway Timeout"
+2025-06-01 14:15:12,889 - httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
+2025-06-01 14:15:12,900 - dagshub - INFO - Accessing as lexynotfound
+2025-06-01 14:15:14,063 - httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/repos/lexynotfound/mlops "HTTP/1.1 200 OK"
+2025-06-01 14:15:15,005 - httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
+2025-06-01 14:15:15,008 - dagshub - INFO - Initialized MLflow to track repo "lexynotfound/mlops"
+2025-06-01 14:15:15,008 - dagshub - INFO - Repository lexynotfound/mlops initialized!
+2025-06-01 14:15:15,916 - candidate_recommendation.training - INFO - Starting candidate recommendation model training
+2025-06-01 14:15:15,917 - candidate_recommendation.training - INFO - Starting model training with data from ../preprocessing/dataset/career_form_preprocessed
+2025-06-01 14:15:15,925 - candidate_recommendation.training - INFO - Data loaded successfully: X shape=(245, 16), target rows=245
+2025-06-01 14:15:15,925 - candidate_recommendation.training - INFO - Total NaN values in desired_positions: 1
+2025-06-01 14:15:15,928 - candidate_recommendation.training - INFO - Rows after cleaning NaN: 244 (removed 1 rows)
+2025-06-01 14:15:16,816 - candidate_recommendation.training - INFO - MLflow run started with ID: 9ef94bf20c334ea8bb892fe2e64bf4db
+2025-06-01 14:15:18,063 - candidate_recommendation.training - INFO - Data split: train=(196, 16), test=(49, 16)
+2025-06-01 14:15:18,063 - candidate_recommendation.training - INFO - Training KMeans with k=2
+2025-06-01 14:15:22,048 - candidate_recommendation.training - INFO - K=2, Silhouette Score=0.2348
+2025-06-01 14:15:22,049 - candidate_recommendation.training - INFO - Training KMeans with k=3
+2025-06-01 14:15:22,086 - candidate_recommendation.training - INFO - K=3, Silhouette Score=0.2372
+2025-06-01 14:15:22,086 - candidate_recommendation.training - INFO - Training KMeans with k=4
+2025-06-01 14:15:22,138 - candidate_recommendation.training - INFO - K=4, Silhouette Score=0.2485
+2025-06-01 14:15:22,138 - candidate_recommendation.training - INFO - Training KMeans with k=5
+2025-06-01 14:15:22,202 - candidate_recommendation.training - INFO - K=5, Silhouette Score=0.2751
+2025-06-01 14:15:22,202 - candidate_recommendation.training - INFO - Training KMeans with k=6
+2025-06-01 14:15:22,258 - candidate_recommendation.training - INFO - K=6, Silhouette Score=0.3033
+2025-06-01 14:15:22,258 - candidate_recommendation.training - INFO - Training KMeans with k=7
+2025-06-01 14:15:22,318 - candidate_recommendation.training - INFO - K=7, Silhouette Score=0.3200
+2025-06-01 14:15:22,318 - candidate_recommendation.training - INFO - Training KMeans with k=8
+2025-06-01 14:15:22,386 - candidate_recommendation.training - INFO - K=8, Silhouette Score=0.3421
+2025-06-01 14:15:22,386 - candidate_recommendation.training - INFO - Training KMeans with k=9
+2025-06-01 14:15:22,460 - candidate_recommendation.training - INFO - K=9, Silhouette Score=0.3646
+2025-06-01 14:15:22,460 - candidate_recommendation.training - INFO - Optimal k value: 9
+2025-06-01 14:15:26,431 - candidate_recommendation.training - INFO - Training final model with k=9
+2025-06-01 14:15:26,502 - candidate_recommendation.training - INFO - Test metrics: {'silhouette_score': np.float64(0.3975112937206874), 'calinski_harabasz_score': np.float64(12.811324416760293), 'davies_bouldin_score': np.float64(1.1128422832712332)}
+2025-06-01 14:15:28,514 - candidate_recommendation.training - INFO - Cluster visualization saved to cluster_centers.png
+2025-06-01 14:15:29,485 - candidate_recommendation.training - INFO - Creating TF-IDF vectorizer for job positions
+2025-06-01 14:15:33,769 - candidate_recommendation.training - INFO - Logging model artifacts to MLflow
+2025-06-01 14:16:00,819 - candidate_recommendation.training - INFO - Model training completed successfully
+2025-06-01 14:16:00,819 - candidate_recommendation.training - INFO - Model trained with 245 samples and 16 features
+2025-06-01 14:16:00,819 - candidate_recommendation.training - INFO - Optimal number of clusters: 9
+2025-06-01 14:16:00,819 - candidate_recommendation.training - INFO - Test silhouette score: 0.3975
+2025-06-01 14:16:01,452 - candidate_recommendation.training - INFO - Model training completed and logged to MLflow

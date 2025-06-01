@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: workflow-ci/Dockerfile
+    container_name: candidate-recommender-app
+    ports:
+      - "3000:3000"   # Flask API
+      - "8001:8001"   # Prometheus exporter
+    restart: always
+    networks:
+      - monitor-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ../monitor/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      #- ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: always
+    networks:
+      - monitor-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"  # akses Grafana di localhost:3001
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    restart: always
+    networks:
+      - monitor-net
+
+volumes:
+  grafana-storage:
+
+networks:
+  monitor-net:
+    driver: bridge

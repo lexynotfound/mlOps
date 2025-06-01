@@ -2,6 +2,7 @@ import os
 import time
 import pandas as pd
 import numpy as np
+import traceback
 from flask import Flask, request, jsonify
 import logging
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
