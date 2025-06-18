@@ -69,7 +69,7 @@ jobs:
         docker tag candidate-recommender:latest ${{ secrets.DOCKER_USERNAME }}/candidate-recommender:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/candidate-recommender:latest
 
-    - name: Save model artifacts
+    - name: Save membangun_model artifacts
       run: |
         mkdir -p model-artifacts
         
@@ -84,11 +84,11 @@ jobs:
           cp -r $LATEST_RUN/* model-artifacts/
         fi
 
-    - name: Upload model artifacts to GitHub
+    - name: Upload membangun_model artifacts to GitHub
       uses: actions/upload-artifact@v3
       with:
-        name: model-artifacts
-        path: model-artifacts/
+        name: membangun_model-artifacts
+        path: membangun_model-artifacts/
 
     - name: Verify artifacts
       run: |
