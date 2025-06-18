@@ -1,0 +1,79 @@
+2025-06-18 10:52:04,648 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:3000
+ * Running on http://192.168.106.28:3000
+2025-06-18 10:52:04,648 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-18 10:52:04,999 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 10:52:04] "GET /health HTTP/1.1" 200 -
+2025-06-18 10:55:10,548 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 10:55:10] "GET /health HTTP/1.1" 200 -
+2025-06-18 10:55:10,614 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 10:55:10] "GET /health HTTP/1.1" 200 -
+2025-06-18 11:01:10,265 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:10] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:12,298 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:12] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:12,329 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:12] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:14,321 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:14] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:14,356 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:14] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:16,346 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:16] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:16,384 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:16] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:18,372 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:18] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:18,398 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:18] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:20,415 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:20] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:21,412 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:21] "GET /health HTTP/1.1" 200 -
+2025-06-18 11:01:23,447 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:23] "GET /health HTTP/1.1" 200 -
+2025-06-18 11:01:23,462 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:23] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:25,479 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:25] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:01:25,504 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:25] "GET /stats HTTP/1.1" 200 -
+2025-06-18 11:01:27,535 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:27] "GET /stats HTTP/1.1" 200 -
+2025-06-18 11:01:27,565 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:27] "GET /metrics HTTP/1.1" 200 -
+2025-06-18 11:01:29,829 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:01:29] "GET /metrics HTTP/1.1" 200 -
+2025-06-18 11:09:11,145 - inference_service - INFO - Prometheus metrics server started on port 8001
+2025-06-18 11:09:11,145 - inference_service - INFO - Model loaded successfully
+2025-06-18 11:09:11,156 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:3000
+ * Running on http://192.168.106.28:3000
+2025-06-18 11:09:11,157 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-18 11:12:14,367 - inference_service - INFO - Health check successful
+2025-06-18 11:12:14,367 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:14] "GET /health HTTP/1.1" 200 -
+2025-06-18 11:12:16,423 - inference_service - INFO - Prediction successful: John Doe -> Cluster 1
+2025-06-18 11:12:16,423 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:16] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:19,476 - inference_service - INFO - Prediction successful: Jane Smith -> Cluster 1
+2025-06-18 11:12:19,476 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:19] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:22,524 - inference_service - INFO - Prediction successful: Bob Wilson -> Cluster 0
+2025-06-18 11:12:22,524 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:22] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:25,558 - inference_service - INFO - Batch prediction completed: 3 candidates
+2025-06-18 11:12:25,559 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:25] "POST /batch_predict HTTP/1.1" 200 -
+2025-06-18 11:12:27,602 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:27] "GET /stats HTTP/1.1" 200 -
+2025-06-18 11:12:29,638 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:29] "GET /metrics HTTP/1.1" 200 -
+2025-06-18 11:12:31,645 - inference_service - INFO - Prediction successful: LoadTest_0 -> Cluster 0
+2025-06-18 11:12:31,645 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:31] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:34,151 - inference_service - INFO - Prediction successful: LoadTest_1 -> Cluster 1
+2025-06-18 11:12:34,151 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:34] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:36,659 - inference_service - INFO - Prediction successful: LoadTest_2 -> Cluster 2
+2025-06-18 11:12:36,660 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:36] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:39,176 - inference_service - INFO - Prediction successful: LoadTest_3 -> Cluster 1
+2025-06-18 11:12:39,176 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:39] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:41,697 - inference_service - INFO - Prediction successful: LoadTest_4 -> Cluster 1
+2025-06-18 11:12:41,697 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:41] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:44,212 - inference_service - INFO - Prediction successful: LoadTest_5 -> Cluster 2
+2025-06-18 11:12:44,213 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:44] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:46,723 - inference_service - INFO - Prediction successful: LoadTest_6 -> Cluster 0
+2025-06-18 11:12:46,723 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:46] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:49,254 - inference_service - INFO - Prediction successful: LoadTest_7 -> Cluster 1
+2025-06-18 11:12:49,254 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:49] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:51,774 - inference_service - INFO - Prediction successful: LoadTest_8 -> Cluster 1
+2025-06-18 11:12:51,775 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:51] "POST /predict HTTP/1.1" 200 -
+2025-06-18 11:12:54,293 - inference_service - INFO - Prediction successful: LoadTest_9 -> Cluster 0
+2025-06-18 11:12:54,293 - werkzeug - INFO - 127.0.0.1 - - [18/Jun/2025 11:12:54] "POST /predict HTTP/1.1" 200 -
+2025-06-18 14:00:16,072 - inference_service - INFO - Prometheus metrics server started on port 8001
+2025-06-18 14:00:16,072 - inference_service - INFO - Model loaded successfully
+2025-06-18 14:00:16,099 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:3000
+ * Running on http://192.168.106.28:3000
+2025-06-18 14:00:16,100 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-18 14:08:02,616 - inference_service - INFO - Prometheus metrics server started on port 8001
+2025-06-18 14:08:02,616 - inference_service - INFO - Model loaded successfully
+2025-06-18 14:08:02,640 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:3000
+ * Running on http://192.168.106.28:3000
+2025-06-18 14:08:02,641 - werkzeug - INFO - [33mPress CTRL+C to quit[0m

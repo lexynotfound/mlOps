@@ -27,13 +27,13 @@ PREDICTION_LATENCY = Histogram('model_prediction_latency_seconds', 'Histogram of
 CONFIDENCE_SCORE = Gauge('model_confidence_score', 'Confidence score of predictions')
 CLUSTER_DISTRIBUTION = Gauge('model_cluster_distribution', 'Distribution of samples across clusters', ['cluster'])
 PREDICTION_ERRORS = Counter('model_prediction_errors', 'Prediction errors', ['error_type'])
-CPU_USAGE = Gauge('model_cpu_usage_percent', 'CPU usage percentage of the model')
+CPU_USAGE = Gauge('model_cpu_usage_percent', 'CPU usage percentage of the membangun_model')
 MEMORY_USAGE = Gauge('model_memory_usage_bytes', 'Memory usage in bytes')
 DATA_DRIFT = Gauge('model_data_drift_score', 'Data drift detection score')
 FEATURE_IMPORTANCE = Gauge('model_feature_importance', 'Feature importance values', ['feature'])
 BATCH_SIZE = Summary('model_batch_size', 'Summary of batch sizes for predictions')
 API_REQUESTS = Counter('api_requests_total', 'Total API requests', ['endpoint', 'status'])
-MODEL_LOAD_TIME = Gauge('model_load_time_seconds', 'Time taken to load model in seconds')
+MODEL_LOAD_TIME = Gauge('model_load_time_seconds', 'Time taken to load membangun_model in seconds')
 REQUEST_RATE = Counter('request_rate', 'Rate of requests per second')
 MODEL_VERSION = Gauge('model_version', 'Model version information', ['version'])
 
@@ -41,14 +41,14 @@ MODEL_VERSION = Gauge('model_version', 'Model version information', ['version'])
 FEATURES = ['education_score', 'experience_years', 'salary_expectation', 'skill_match']
 
 
-# Load model for simulations
+# Load membangun_model for simulations
 def load_model():
-    """Load model for metrics simulation"""
+    """Load membangun_model for metrics simulation"""
     start_time = time.time()
     try:
-        # In a real scenario, you would load your actual model
-        # model = mlflow.sklearn.load_model("mlflow-artifacts/kmeans_model")
-        # For simulation, we'll create a dummy model structure
+        # In a real scenario, you would load your actual membangun_model
+        # membangun_model = mlflow.sklearn.load_model("mlflow-artifacts/kmeans_model")
+        # For simulation, we'll create a dummy membangun_model structure
         model = {
             'n_clusters': 5,
             'version': '1.0.0',
@@ -61,13 +61,13 @@ def load_model():
         return model
     except Exception as e:
         PREDICTION_ERRORS.labels(error_type='model_loading').inc()
-        logger.error(f"Error loading model: {str(e)}")
+        logger.error(f"Error loading membangun_model: {str(e)}")
         return None
 
 
-# Simulate model predictions and metrics updates
+# Simulate membangun_model predictions and metrics updates
 def simulate_prediction(model, batch_size=1):
-    """Simulate model prediction and update metrics"""
+    """Simulate membangun_model prediction and update metrics"""
     start_time = time.time()
 
     try:
@@ -79,7 +79,7 @@ def simulate_prediction(model, batch_size=1):
         processing_time = 0.01 * batch_size + random.uniform(0.01, 0.05)
         time.sleep(processing_time)
 
-        # Simulate cluster assignment (in real case would be model.predict())
+        # Simulate cluster assignment (in real case would be membangun_model.predict())
         cluster_id = random.randint(0, model['n_clusters'] - 1)
 
         # Update metrics
@@ -126,10 +126,10 @@ def main():
     start_http_server(8000)
     logger.info("Prometheus metrics server started on port 8000")
 
-    # Load model
+    # Load membangun_model
     model = load_model()
     if not model:
-        logger.error("Failed to load model. Exiting.")
+        logger.error("Failed to load membangun_model. Exiting.")
         return
 
     # Simulate predictions and update metrics

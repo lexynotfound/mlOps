@@ -1,249 +1,268 @@
 import os
 import time
-import pandas as pd
+import json
 import numpy as np
 import traceback
 from flask import Flask, request, jsonify
 import logging
-from prometheus_client import Counter, Histogram, Gauge, start_http_server
+from prometheus_client import Counter, Histogram, Gauge, start_http_server, generate_latest, CONTENT_TYPE_LATEST
+from datetime import datetime
+import threading
 
 # Configure Flask app
 app = Flask(__name__)
 
-# Configure logging
+# Configure logging with ASCII-safe format
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("inference_service.log", encoding='utf-8'),
+        logging.StreamHandler()
+    ]
 )
 logger = logging.getLogger("inference_service")
 
-# Define Prometheus metrics
-PREDICTIONS_COUNTER = Counter('api_predictions_total', 'Total number of predictions')
-PREDICTION_LATENCY = Histogram('api_prediction_latency_seconds', 'Prediction latency in seconds')
+# PROMETHEUS METRICS FOR GRAFANA
+PREDICTIONS_COUNTER = Counter('ml_predictions_total', 'Total number of predictions made')
+PREDICTION_LATENCY = Histogram('ml_prediction_latency_seconds', 'Prediction latency in seconds')
 API_REQUESTS = Counter('api_requests_total', 'Total API requests', ['endpoint', 'status'])
-MODEL_CONFIDENCE = Gauge('api_confidence_score', 'Confidence score for predictions')
+MODEL_CONFIDENCE = Gauge('ml_model_confidence_score', 'Model confidence score')
+ACTIVE_USERS = Gauge('api_active_users', 'Number of active users')
+ERROR_RATE = Gauge('api_error_rate', 'API error rate percentage')
+MEMORY_USAGE = Gauge('api_memory_usage_bytes', 'Memory usage in bytes')
+CPU_USAGE = Gauge('api_cpu_usage_percent', 'CPU usage percentage')
 
 # Start Prometheus metrics server
 try:
-    start_http_server(8001)  # Use different port from Flask app
+    start_http_server(8001)  # Port 8001 for metrics
     logger.info("Prometheus metrics server started on port 8001")
 except Exception as e:
     logger.warning(f"Could not start Prometheus server: {str(e)}")
 
 
-# Dummy model implementation - completely manual
+# Dummy model for demo (removed pandas dependency)
 class DummyModel:
-    """Dummy clustering model that simulates KMeans"""
-
     def __init__(self):
-        # Define 3 clusters based on salary
-        self.cluster_centers_ = np.array([
-            [5000000],  # Low salary
-            [10000000],  # Medium salary
-            [15000000]  # High salary
-        ])
+        self.clusters = 3
+        self.confidence_threshold = 0.7
 
-    def predict(self, X):
-        """Predict closest cluster based on salary"""
-        # Find the closest cluster center
-        distances = np.abs(X - self.cluster_centers_)
-        return np.argmin(distances, axis=0)
+    def predict(self, features):
+        # Simulate cluster prediction
+        cluster = np.random.randint(0, self.clusters)
+        confidence = np.random.uniform(0.5, 0.95)
+        return cluster, confidence
 
 
-class DummyVectorizer:
-    """Dummy text vectorizer"""
-
-    def transform(self, texts):
-        """Transform text into a simple feature vector"""
-        # Create dummy vector that will work with similarity calculation
-        return np.ones((1, 1))
-
-
-class DummyPreprocessor:
-    """Dummy preprocessor"""
-
-    def transform(self, X):
-        """Extract salary feature from input data"""
-        if isinstance(X, pd.DataFrame) and 'Expected salary (IDR)' in X.columns:
-            try:
-                salary = float(X['Expected salary (IDR)'].iloc[0]) if len(X) > 0 else 5000000
-            except (ValueError, TypeError):
-                salary = 5000000
-        else:
-            salary = 5000000
-
-        return np.array([[salary]])
-
-
-# Initialize with dummy components
+# Initialize model
 model = DummyModel()
-vectorizer = DummyVectorizer()
-preprocessor = DummyPreprocessor()
+logger.info("Model loaded successfully")
 
 
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
-    API_REQUESTS.labels(endpoint='/health', status='success').inc()
-    return jsonify({
-        "status": "healthy",
-        "model_loaded": True,
-        "components": {
-            "model_type": "DummyModel",
-            "vectorizer_type": "DummyVectorizer",
-            "preprocessor_type": "DummyPreprocessor"
+    try:
+        API_REQUESTS.labels(endpoint='/health', status='success').inc()
+
+        # Update system metrics
+        CPU_USAGE.set(np.random.uniform(10, 40))
+        MEMORY_USAGE.set(np.random.uniform(100_000_000, 500_000_000))
+
+        health_status = {
+            "status": "healthy",
+            "timestamp": datetime.now().isoformat(),
+            "model_loaded": True,
+            "metrics_enabled": True,
+            "uptime_seconds": time.time(),
+            "version": "1.0.0"
         }
-    }), 200
+
+        logger.info("Health check successful")
+        return jsonify(health_status), 200
+
+    except Exception as e:
+        API_REQUESTS.labels(endpoint='/health', status='error').inc()
+        logger.error(f"Health check failed: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    """Endpoint for making predictions"""
+    """Prediction endpoint"""
     start_time = time.time()
 
     try:
-        # Get data from request
+        # Get request data
         data = request.json
-
-        if not data or not isinstance(data, dict):
+        if not data:
             API_REQUESTS.labels(endpoint='/predict', status='error').inc()
-            return jsonify({"error": "Invalid input format"}), 400
+            return jsonify({"error": "No input data provided"}), 400
 
-        # Extract candidate information
-        candidate_info = {
-            'Full name': data.get('name', ''),
-            'Gender': data.get('gender', ''),
-            'Marital status': data.get('marital_status', ''),
-            'Highest formal of education': data.get('education', ''),
-            'Faculty/Major': data.get('major', ''),
-            'Current status': data.get('current_status', ''),
-            'Experience': data.get('experience', ''),
-            'Expected salary (IDR)': data.get('expected_salary', 0)
+        # Extract features
+        features = {
+            'name': data.get('name', 'Unknown'),
+            'experience': data.get('experience', 'Fresh Graduate'),
+            'education': data.get('education', 'Bachelor'),
+            'expected_salary': data.get('expected_salary', 5000000),
+            'position': data.get('desired_position', 'Software Engineer')
         }
 
-        # Create DataFrame
-        df = pd.DataFrame([candidate_info])
+        # Make prediction
+        cluster, confidence = model.predict(features)
 
-        # Preprocess input data
-        features = preprocessor.transform(df)
-
-        # Make prediction (cluster assignment)
-        cluster = model.predict(features)[0]
-
-        # Process job information if provided
-        job_fit_scores = {}
-        if 'job_description' in data:
-            # For demo purposes, generate a confidence score based on education level
-            edu_map = {
-                'High School': 0.5,
-                'Diploma': 0.6,
-                'Bachelor': 0.7,
-                'Master': 0.8,
-                'PhD': 0.9
-            }
-            education = data.get('education', 'Bachelor')
-            confidence = edu_map.get(education, 0.7)
-
-            # Add some randomness (±0.1)
-            confidence = min(max(confidence + np.random.uniform(-0.1, 0.1), 0.5), 0.95)
-
-            # Update metrics
-            MODEL_CONFIDENCE.set(confidence)
-
-            job_fit_scores = {
-                "job_title": data.get('job_title', 'Unspecified Position'),
-                "cluster_id": int(cluster),
-                "confidence_score": float(confidence),
-                "recommendation": "Recommended" if confidence > 0.7 else "Consider" if confidence > 0.5 else "Not Recommended"
-            }
+        # Determine recommendation
+        if confidence > 0.8:
+            recommendation = "Highly Recommended"
+            priority = "HIGH"
+        elif confidence > 0.6:
+            recommendation = "Recommended"
+            priority = "MEDIUM"
         else:
-            # Just return cluster without job matching
-            job_fit_scores = {
-                "cluster_id": int(cluster)
-            }
+            recommendation = "Consider"
+            priority = "LOW"
 
-        # Record metrics
+        # Prepare response
+        prediction_result = {
+            "candidate_name": features['name'],
+            "cluster_id": int(cluster),
+            "confidence_score": float(confidence),
+            "recommendation": recommendation,
+            "priority": priority,
+            "match_percentage": round(confidence * 100, 2),
+            "processing_time_ms": round((time.time() - start_time) * 1000, 2),
+            "timestamp": datetime.now().isoformat()
+        }
+
+        # Update metrics
         PREDICTIONS_COUNTER.inc()
         PREDICTION_LATENCY.observe(time.time() - start_time)
+        MODEL_CONFIDENCE.set(confidence)
         API_REQUESTS.labels(endpoint='/predict', status='success').inc()
+        ACTIVE_USERS.set(np.random.randint(1, 10))
+        ERROR_RATE.set(np.random.uniform(0, 5))  # 0-5% error rate
 
-        # Return prediction results
-        return jsonify({
-            "prediction": job_fit_scores,
-            "processing_time_ms": round((time.time() - start_time) * 1000, 2)
-        }), 200
+        logger.info(f"Prediction successful: {prediction_result['candidate_name']} -> Cluster {cluster}")
+        return jsonify(prediction_result), 200
 
     except Exception as e:
-        logger.error(f"Prediction error: {str(e)}")
-        logger.error(traceback.format_exc())
         API_REQUESTS.labels(endpoint='/predict', status='error').inc()
+        ERROR_RATE.set(np.random.uniform(10, 25))  # Higher error rate
+        logger.error(f"Prediction failed: {str(e)}")
+        logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
 
 
 @app.route('/batch_predict', methods=['POST'])
 def batch_predict():
-    """Endpoint for batch predictions"""
+    """Batch prediction endpoint"""
     start_time = time.time()
 
     try:
-        # Get data from request
         data = request.json
-
-        if not data or not isinstance(data, list):
+        if not isinstance(data, list):
             API_REQUESTS.labels(endpoint='/batch_predict', status='error').inc()
             return jsonify({"error": "Input must be a list of candidates"}), 400
 
         results = []
-
-        # Process each candidate
         for candidate in data:
-            # Extract candidate information
-            candidate_info = {
-                'Full name': candidate.get('name', ''),
-                'Gender': candidate.get('gender', ''),
-                'Marital status': candidate.get('marital_status', ''),
-                'Highest formal of education': candidate.get('education', ''),
-                'Faculty/Major': candidate.get('major', ''),
-                'Current status': candidate.get('current_status', ''),
-                'Experience': candidate.get('experience', ''),
-                'Expected salary (IDR)': candidate.get('expected_salary', 0)
-            }
-
-            # Create DataFrame
-            df = pd.DataFrame([candidate_info])
-
-            # Preprocess input data
-            features = preprocessor.transform(df)
-
-            # Make prediction (cluster assignment)
-            cluster = model.predict(features)[0]
-
-            # Add to results
+            cluster, confidence = model.predict(candidate)
             results.append({
                 "candidate_id": candidate.get('id', 'unknown'),
-                "cluster_id": int(cluster)
+                "cluster_id": int(cluster),
+                "confidence_score": float(confidence)
             })
 
-        # Record metrics
-        batch_size = len(data)
-        PREDICTIONS_COUNTER.inc(batch_size)
+        # Update metrics
+        PREDICTIONS_COUNTER.inc(len(data))
         PREDICTION_LATENCY.observe(time.time() - start_time)
         API_REQUESTS.labels(endpoint='/batch_predict', status='success').inc()
 
-        # Return prediction results
-        return jsonify({
+        response = {
             "predictions": results,
-            "count": batch_size,
-            "processing_time_ms": round((time.time() - start_time) * 1000, 2)
-        }), 200
+            "total_candidates": len(data),
+            "processing_time_ms": round((time.time() - start_time) * 1000, 2),
+            "timestamp": datetime.now().isoformat()
+        }
+
+        logger.info(f"Batch prediction completed: {len(data)} candidates")
+        return jsonify(response), 200
 
     except Exception as e:
-        logger.error(f"Batch prediction error: {str(e)}")
         API_REQUESTS.labels(endpoint='/batch_predict', status='error').inc()
+        logger.error(f"Batch prediction failed: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    """Prometheus metrics endpoint"""
+    try:
+        return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+    except Exception as e:
+        logger.error(f"Metrics endpoint failed: {str(e)}")
+        return str(e), 500
+
+
+@app.route('/stats', methods=['GET'])
+def get_stats():
+    """API statistics endpoint"""
+    try:
+        stats = {
+            "total_predictions": int(PREDICTIONS_COUNTER._value._value),
+            "current_confidence": MODEL_CONFIDENCE._value._value,
+            "active_users": int(ACTIVE_USERS._value._value),
+            "error_rate_percent": ERROR_RATE._value._value,
+            "cpu_usage_percent": CPU_USAGE._value._value,
+            "memory_usage_mb": MEMORY_USAGE._value._value / 1_000_000,
+            "uptime_seconds": time.time(),
+            "status": "operational"
+        }
+
+        API_REQUESTS.labels(endpoint='/stats', status='success').inc()
+        return jsonify(stats), 200
+
+    except Exception as e:
+        API_REQUESTS.labels(endpoint='/stats', status='error').inc()
+        logger.error(f"Stats endpoint failed: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+def simulate_background_activity():
+    """Background activity to generate realistic metrics"""
+    def background_task():
+        while True:
+            try:
+                # Simulate varying load
+                CPU_USAGE.set(np.random.uniform(5, 45))
+                MEMORY_USAGE.set(np.random.uniform(80_000_000, 600_000_000))
+                ACTIVE_USERS.set(np.random.randint(1, 15))
+                ERROR_RATE.set(np.random.uniform(0, 8))
+
+                # Random confidence variations
+                MODEL_CONFIDENCE.set(np.random.uniform(0.6, 0.95))
+
+                time.sleep(30)  # Update every 30 seconds
+            except:
+                pass
+
+    thread = threading.Thread(target=background_task, daemon=True)
+    thread.start()
+
+
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 3000))
-    logger.info(f"Starting Flask app on port {port}")
-    app.run(host='0.0.0.0', port=port)
+    # Start background metrics simulation
+    simulate_background_activity()
+
+    print("Starting Inference Service...")
+    print("Endpoints:")
+    print("   - Health Check: http://localhost:3000/health")
+    print("   - Prediction: http://localhost:3000/predict")
+    print("   - Batch Predict: http://localhost:3000/batch_predict")
+    print("   - Statistics: http://localhost:3000/stats")
+    print("   - Metrics: http://localhost:3000/metrics")
+    print("Prometheus Metrics: http://localhost:8001")
+    print("Ready for Grafana monitoring!")
+
+    # Start Flask app
+    app.run(host='0.0.0.0', port=3000, debug=False)

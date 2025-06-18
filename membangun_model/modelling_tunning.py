@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Candidate Recommendation System ML Model Training & Tuning
-This script performs training and tuning for the KMeans clustering model
+This script performs training and tuning for the KMeans clustering membangun_model
 used in the candidate recommendation system.
 """
 
@@ -61,7 +61,7 @@ mlflow.set_experiment(EXPERIMENT_NAME)
 
 def load_data(data_dir: str) -> Tuple[np.ndarray, pd.DataFrame]:
     """
-    Load preprocessed data for model training.
+    Load preprocessed data for membangun_model training.
 
     Args:
         data_dir: Directory containing preprocessed data files
@@ -143,7 +143,7 @@ def analyze_clusters(model: KMeans, X_test: np.ndarray) -> Dict[str, float]:
     Analyze cluster quality using multiple metrics.
 
     Args:
-        model: Trained KMeans model
+        model: Trained KMeans membangun_model
         X_test: Test data
 
     Returns:
@@ -240,7 +240,7 @@ def analyze_position_clusters(position_matrix, cluster_centers: np.ndarray, top_
 
 def train_model(data_dir: str = '../preprocessing/dataset/career_form_preprocessed') -> Tuple[Any, Any]:
     """
-    Train the candidate recommendation model and log results to MLflow.
+    Train the candidate recommendation membangun_model and log results to MLflow.
 
     Args:
         data_dir: Directory containing preprocessed data
@@ -248,7 +248,7 @@ def train_model(data_dir: str = '../preprocessing/dataset/career_form_preprocess
     Returns:
         Tuple of (trained_model, vectorizer)
     """
-    logger.info(f"Starting model training with data from {data_dir}")
+    logger.info(f"Starting membangun_model training with data from {data_dir}")
 
     try:
         # Load data
@@ -295,12 +295,12 @@ def train_model(data_dir: str = '../preprocessing/dataset/career_form_preprocess
             # Log optimal k
             mlflow.log_param("optimal_k", optimal_k)
 
-            # Train final model with optimal k
-            logger.info(f"Training final model with k={optimal_k}")
+            # Train final membangun_model with optimal k
+            logger.info(f"Training final membangun_model with k={optimal_k}")
             final_model = KMeans(n_clusters=optimal_k, random_state=42, n_init=10)
             final_model.fit(X_train)
 
-            # Evaluate model
+            # Evaluate membangun_model
             metrics = analyze_clusters(final_model, X_test)
 
             # Log evaluation metrics
@@ -331,8 +331,8 @@ def train_model(data_dir: str = '../preprocessing/dataset/career_form_preprocess
                 mlflow.log_metric(f"closest_cluster_{i + 1}", cluster_idx)
                 mlflow.log_metric(f"closest_cluster_{i + 1}_distance", dist)
 
-            # Log vectorizer and model
-            logger.info("Logging model artifacts to MLflow")
+            # Log vectorizer and membangun_model
+            logger.info("Logging membangun_model artifacts to MLflow")
             mlflow.sklearn.log_model(final_model, "kmeans_model")
             mlflow.sklearn.log_model(tfidf, "tfidf_vectorizer")
 
@@ -355,13 +355,13 @@ def train_model(data_dir: str = '../preprocessing/dataset/career_form_preprocess
             return final_model, tfidf
 
     except Exception as e:
-        logger.error(f"Error during model training: {str(e)}", exc_info=True)
+        logger.error(f"Error during membangun_model training: {str(e)}", exc_info=True)
         raise
 
 
 if __name__ == "__main__":
     try:
-        logger.info("Starting candidate recommendation model training")
+        logger.info("Starting candidate recommendation membangun_model training")
         model, vectorizer = train_model()
         logger.info("Model training completed and logged to MLflow")
 
