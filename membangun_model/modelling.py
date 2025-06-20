@@ -28,6 +28,7 @@ else:
 # Set experiment
 experiment_name = "candidate_recommendation_system"
 mlflow.set_experiment(experiment_name)
+mlflow.autolog()
 
 def load_data(data_dir):
     """Load preprocessed data"""
