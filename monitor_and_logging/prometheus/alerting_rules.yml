@@ -1,0 +1,125 @@
+groups:
+  - name: ml_model_alerts
+    rules:
+      - alert: HighPredictionLatency
+        expr: rate(ml_prediction_latency_seconds_sum[5m]) / rate(ml_prediction_latency_seconds_count[5m]) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+          service: ml-inference
+          team: ml-ops
+        annotations:
+          summary: "High ML Model Prediction Latency Detected"
+          description: "ML model prediction latency is {{ $value }}s, which is above the 0.5s threshold for more than 2 minutes."
+          runbook_url: "https://docs.company.com/runbooks/ml-latency"
+          dashboard_url: "http://localhost:3001/d/ml-dashboard"
+
+      - alert: LowModelConfidence
+        expr: ml_model_confidence_score < 0.7
+        for: 1m
+        labels:
+          severity: critical
+          service: ml-inference
+          team: ml-ops
+        annotations:
+          summary: "Low ML Model Confidence Score"
+          description: "ML model confidence score is {{ $value }}, which is below the 70% threshold."
+          action_required: "Check model performance and consider retraining"
+
+      - alert: HighErrorRate
+        expr: api_error_rate > 10
+        for: 3m
+        labels:
+          severity: critical
+          service: ml-inference
+          team: platform
+        annotations:
+          summary: "High API Error Rate"
+          description: "API error rate is {{ $value }}%, which is above the 10% threshold for more than 3 minutes."
+          immediate_action: "Check service logs and infrastructure"
+
+      - alert: APIServiceDown
+        expr: up{job="inference-service"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: ml-inference
+          team: platform
+        annotations:
+          summary: "ML Inference API Service Down"
+          description: "The ML inference API service has been down for more than 1 minute."
+          immediate_action: "Restart service immediately"
+
+      - alert: NoRecentPredictions
+        expr: increase(ml_predictions_total[10m]) == 0
+        for: 5m
+        labels:
+          severity: warning
+          service: ml-inference
+          team: ml-ops
+        annotations:
+          summary: "No Recent ML Predictions"
+          description: "No ML predictions have been made in the last 10 minutes."
+          investigation: "Check if service is receiving requests"
+
+      - alert: HighCPUUsage
+        expr: api_cpu_usage_percent > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: ml-inference
+          team: platform
+        annotations:
+          summary: "High CPU Usage on ML Service"
+          description: "CPU usage is {{ $value }}%, which is above 80% for more than 5 minutes."
+          action: "Consider scaling up resources"
+
+      - alert: HighMemoryUsage
+        expr: api_memory_usage_bytes > 1000000000
+        for: 5m
+        labels:
+          severity: warning
+          service: ml-inference
+          team: platform
+        annotations:
+          summary: "High Memory Usage on ML Service"
+          description: "Memory usage is {{ $value | humanize }}B, which is above 1GB threshold."
+          action: "Monitor for memory leaks or scale up"
+
+      - alert: TooManyActiveUsers
+        expr: api_active_users > 50
+        for: 2m
+        labels:
+          severity: info
+          service: ml-inference
+          team: ml-ops
+        annotations:
+          summary: "High Number of Active Users"
+          description: "There are {{ $value }} active users, which is above normal capacity."
+          action: "Consider scaling horizontally"
+
+  - name: data_quality_alerts
+    rules:
+      - alert: ModelDriftDetected
+        expr: ml_model_confidence_score < 0.6
+        for: 10m
+        labels:
+          severity: warning
+          service: ml-inference
+          team: data-science
+        annotations:
+          summary: "Potential Model Drift Detected"
+          description: "Model confidence has been consistently low ({{ $value }}) for 10+ minutes, indicating potential data drift."
+          action: "Review recent data quality and consider model retraining"
+
+      - alert: UnusualPredictionPattern
+        expr: rate(ml_predictions_total[1h]) > 1000
+        for: 5m
+        labels:
+          severity: info
+          service: ml-inference
+          team: ml-ops
+        annotations:
+          summary: "Unusual High Prediction Volume"
+          description: "Prediction rate is {{ $value }} per hour, which is unusually high."
+          investigation: "Check for potential bot traffic or system issues"

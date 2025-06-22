@@ -33,8 +33,8 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ../monitor/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ../monitor/prometheus/alerting_rules.yml:/etc/prometheus/alerting_rules.yml:ro
+      - ../monitor_and_logging/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../monitor_and_logging/prometheus/alerting_rules.yml:/etc/prometheus/alerting_rules.yml:ro
       - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -69,7 +69,7 @@ services:
       - GF_LOG_LEVEL=info
     volumes:
       - grafana-data:/var/lib/grafana
-      - ../monitor/grafana/provisioning:/etc/grafana/provisioning
+      - ../monitor_and_logging/grafana/provisioning:/etc/grafana/provisioning
     restart: unless-stopped
     depends_on:
       - prometheus
@@ -83,7 +83,7 @@ services:
     ports:
       - "9093:9093"
     volumes:
-      - ../monitor/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ../monitor_and_logging/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
       - alertmanager-data:/alertmanager
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'

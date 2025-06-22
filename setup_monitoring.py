@@ -8,12 +8,12 @@ import requests
 def create_monitoring_structure():
     """Buat struktur folder monitoring lengkap"""
     directories = [
-        'monitor/grafana/dashboards',
-        'monitor/grafana/datasources',
-        'monitor/grafana/provisioning/dashboards',
-        'monitor/grafana/provisioning/datasources',
-        'monitor/prometheus',
-        'monitor/alertmanager',
+        'monitor_and_logging/grafana/dashboards',
+        'monitor_and_logging/grafana/datasources',
+        'monitor_and_logging/grafana/provisioning/dashboards',
+        'monitor_and_logging/grafana/provisioning/datasources',
+        'monitor_and_logging/prometheus',
+        'monitor_and_logging/alertmanager',
         'logs'
     ]
 
@@ -44,7 +44,7 @@ def create_grafana_provisioning():
         ]
     }
 
-    with open('monitor/grafana/provisioning/dashboards/dashboard.yml', 'w') as f:
+    with open('monitor_and_logging/grafana/provisioning/dashboards/dashboard.yml', 'w') as f:
         json.dump(dashboard_provisioning, f, indent=2)
 
     # Datasource provisioning
@@ -62,7 +62,7 @@ def create_grafana_provisioning():
         ]
     }
 
-    with open('monitor/grafana/provisioning/datasources/datasource.yml', 'w') as f:
+    with open('monitor_and_logging/grafana/provisioning/datasources/datasource.yml', 'w') as f:
         json.dump(datasource_provisioning, f, indent=2)
 
     print("✅ Created Grafana provisioning files")
@@ -96,7 +96,7 @@ inhibit_rules:
     equal: ['alertname', 'cluster', 'service']
 """
 
-    with open('monitor/alertmanager/alertmanager.yml', 'w') as f:
+    with open('monitor_and_logging/alertmanager/alertmanager.yml', 'w') as f:
         f.write(alertmanager_config)
 
     print("✅ Created Alertmanager configuration")
