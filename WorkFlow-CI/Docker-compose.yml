@@ -10,15 +10,15 @@ services:
     ports:
       - "3000:3000"   # Flask API
       - "8001:8001"   # Prometheus metrics
+      - "8000:8000"   # Additional metrics exporter
     environment:
       - PYTHONUNBUFFERED=1
       - FLASK_ENV=production
     volumes:
-      - ../model:/app/model
       - ../logs:/app/logs
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -33,21 +33,24 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ../monitor/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ../monitor/prometheus/alerting_rules.yml:/etc/prometheus/alerting_rules.yml
+      - ../monitor/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../monitor/prometheus/alerting_rules.yml:/etc/prometheus/alerting_rules.yml:ro
       - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--storage.tsdb.retention.size=10GB'
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=30d'
       - '--web.enable-lifecycle'
       - '--web.enable-admin-api'
       - '--log.level=info'
+      - '--web.external-url=http://localhost:9090'
     restart: unless-stopped
     depends_on:
-      - app
+      app:
+        condition: service_healthy
     networks:
       - monitoring-network
 
@@ -63,24 +66,24 @@ services:
       - GF_INSTALL_PLUGINS=grafana-piechart-panel
       - GF_ALERTING_ENABLED=true
       - GF_UNIFIED_ALERTING_ENABLED=true
+      - GF_LOG_LEVEL=info
     volumes:
       - grafana-data:/var/lib/grafana
-      - ../monitor/grafana/dashboards:/etc/grafana/provisioning/dashboards
-      - ../monitor/grafana/datasources:/etc/grafana/provisioning/datasources
+      - ../monitor/grafana/provisioning:/etc/grafana/provisioning
     restart: unless-stopped
     depends_on:
       - prometheus
     networks:
       - monitoring-network
 
-  # Alertmanager (optional)
+  # Alertmanager
   alertmanager:
     image: prom/alertmanager:latest
     container_name: alertmanager
     ports:
       - "9093:9093"
     volumes:
-      - ../monitor/alertmanager:/etc/alertmanager
+      - ../monitor/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
       - alertmanager-data:/alertmanager
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
@@ -91,7 +94,7 @@ services:
     networks:
       - monitoring-network
 
-  # Node Exporter (for system metrics)
+  # Node Exporter
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
