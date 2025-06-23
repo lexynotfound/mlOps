@@ -1,6 +1,6 @@
 {
-  "test_timestamp": 1750580126.8436937,
-  "test_date": "2025-06-22 15:15:26",
+  "test_timestamp": 1750691842.8536458,
+  "test_date": "2025-06-23 22:17:22",
   "services_tested": {
     "inference_service": "http://localhost:3000",
     "prometheus": "http://localhost:9090",
@@ -11,69 +11,69 @@
     "predictions": [
       {
         "candidate_name": "John Doe",
-        "cluster_id": 2,
-        "confidence_score": 0.8937568363151899,
-        "match_percentage": 89.38,
+        "cluster_id": 1,
+        "confidence_score": 0.9143176677783005,
+        "match_percentage": 91.43,
         "priority": "HIGH",
-        "processing_time_ms": 0.49,
+        "processing_time_ms": 0.81,
         "recommendation": "Highly Recommended",
-        "timestamp": "2025-06-22T08:15:27.207248"
+        "timestamp": "2025-06-23T15:17:23.558990"
       },
       {
         "candidate_name": "Jane Smith",
-        "cluster_id": 2,
-        "confidence_score": 0.8858662416254603,
-        "match_percentage": 88.59,
-        "priority": "HIGH",
-        "processing_time_ms": 0.23,
-        "recommendation": "Highly Recommended",
-        "timestamp": "2025-06-22T08:15:28.224000"
+        "cluster_id": 1,
+        "confidence_score": 0.7768597050278341,
+        "match_percentage": 77.69,
+        "priority": "MEDIUM",
+        "processing_time_ms": 0.29,
+        "recommendation": "Recommended",
+        "timestamp": "2025-06-23T15:17:24.580996"
       },
       {
         "candidate_name": "Bob Wilson",
-        "cluster_id": 2,
-        "confidence_score": 0.9217365934776802,
-        "match_percentage": 92.17,
-        "priority": "HIGH",
-        "processing_time_ms": 0.18,
-        "recommendation": "Highly Recommended",
-        "timestamp": "2025-06-22T08:15:29.236593"
+        "cluster_id": 0,
+        "confidence_score": 0.6326499384961128,
+        "match_percentage": 63.26,
+        "priority": "MEDIUM",
+        "processing_time_ms": 0.75,
+        "recommendation": "Recommended",
+        "timestamp": "2025-06-23T15:17:25.604220"
       }
     ],
     "batch_prediction": {
       "predictions": [
         {
           "candidate_id": "candidate_1",
-          "cluster_id": 0,
-          "confidence_score": 0.9068037507573833
+          "cluster_id": 2,
+          "confidence_score": 0.7645090674466803
         },
         {
           "candidate_id": "candidate_2",
           "cluster_id": 0,
-          "confidence_score": 0.840864460497557
+          "confidence_score": 0.946649457567567
         },
         {
           "candidate_id": "candidate_3",
-          "cluster_id": 1,
-          "confidence_score": 0.5565723506162521
+          "cluster_id": 2,
+          "confidence_score": 0.7569414733874922
         }
       ],
-      "processing_time_ms": 0.39,
-      "timestamp": "2025-06-22T08:15:30.266038",
+      "processing_time_ms": 39.04,
+      "timestamp": "2025-06-23T15:17:26.678687",
       "total_candidates": 3
     },
     "statistics": {
-      "active_users": 4,
-      "cpu_usage_percent": 36.596216451495465,
-      "current_confidence": 0.9217365934776802,
-      "error_rate_percent": 1.4893000547593078,
-      "memory_usage_mb": 224.6182304473316,
+      "active_users": 5,
+      "cpu_usage_percent": 25.30416233221667,
+      "current_confidence": 0.6326499384961128,
+      "error_rate_percent": 2.0372541691669186,
+      "memory_usage_mb": 147.0856453252415,
       "status": "operational",
-      "total_predictions": 6,
-      "uptime_seconds": 1750580130.2758782
+      "total_predictions": 28,
+      "uptime_seconds": 1750691846.6929047
     },
     "metrics_available": true,
     "load_test_completed": true,
-    "prometheus_scraping": false
+    "prometheus_scraping": true
   }
 }
